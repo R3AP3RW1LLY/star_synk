@@ -1,0 +1,12 @@
+development:
+  adapter: redis
+  url: <%= ENV["REDIS_URL"] %>
+  channel_prefix: star_synk_development
+
+test:
+  adapter: test
+
+production:
+  adapter: redis
+  url: <%= ENV["REDIS_URL"] %>
+  channel_prefix: star_synk_production

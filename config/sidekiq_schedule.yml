@@ -1,0 +1,5 @@
+# Example (disabled until you add a job)
+# heartbeat_job:
+#   cron: "*/5 * * * *"
+#   class: "HeartbeatJob"
+#   queue: default

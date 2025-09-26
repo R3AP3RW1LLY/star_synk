@@ -1,0 +1,4 @@
+web: bundle exec puma -C config/puma.rb
+js:  npm run build:watch
+css: npm run css:watch
+sidekiq: bundle exec sidekiq -C config/sidekiq.yml
