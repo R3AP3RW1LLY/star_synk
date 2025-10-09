@@ -1,8 +1,18 @@
 {
-  "name": "app",
+  "name": "star_synk",
   "private": true,
+  "type": "module",
   "scripts": {
-    "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
-    "build:css": "npx @tailwindcss/cli -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify"
+    "build": "node esbuild.config.js",
+    "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --watch",
+    "watch": "npm-run-all --parallel build build:css",
+    "start": "bin/dev"
+  },
+  "dependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo-rails": "^8.0.18",
+    "esbuild": "^0.25.10",
+    "tailwindcss": "^4.1.14",
+    "npm-run-all": "^4.1.5"
   }
 }
