@@ -1,0 +1,8 @@
+:concurrency: 5
+
+:queues:
+  - default
+  - mailers
+
+:schedule:
+  # Future scheduled jobs will go here in Phase 2
