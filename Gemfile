@@ -1,67 +1,92 @@
+# frozen_string_literal: true
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Source
+# ─────────────────────────────────────────────────────────────────────────────
 source "https://rubygems.org"
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Core framework
+# ─────────────────────────────────────────────────────────────────────────────
 ruby "3.4.6"
-# Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.3"
-# The modern asset pipeline for Rails [https://github.com/rails/propshaft]
-gem "propshaft"
-# Use postgresql as the database for Active Record
-gem "pg", "~> 1.6.2"
-# Use the Puma web server [https://github.com/puma/puma]
-gem "puma", ">= 7.0.4"
-# Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
-gem "jsbundling-rails"
-# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-gem "turbo-rails"
-# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem "stimulus-rails"
-# Bundle and process CSS [https://github.com/rails/cssbundling-rails]
-gem "cssbundling-rails"
-# Build JSON APIs with ease [https://github.com/rails/jbuilder]
-gem "jbuilder"
 
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
+# ─────────────────────────────────────────────────────────────────────────────
+# Assets & Frontend
+# ─────────────────────────────────────────────────────────────────────────────
+gem "cssbundling-rails"         # CSS bundling (Tailwind/Sass/PostCSS)
+gem "jsbundling-rails"          # JS bundling (esbuild/rollup/webpack)
+gem "propshaft"                 # Modern asset pipeline
+gem "stimulus-rails"            # Hotwire: Stimulus
+gem "turbo-rails"               # Hotwire: Turbo
 
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: %i[ windows jruby ]
+# ─────────────────────────────────────────────────────────────────────────────
+# Database & JSON
+# ─────────────────────────────────────────────────────────────────────────────
+gem "jbuilder"                  # JSON responses
+gem "pg", "~> 1.6.2"            # PostgreSQL adapter
 
-# Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
+# ─────────────────────────────────────────────────────────────────────────────
+# Caching, Jobs, WebSockets (Rails 8 Solid* stack)
+# ─────────────────────────────────────────────────────────────────────────────
 gem "solid_cache"
-gem "solid_queue"
 gem "solid_cable"
+gem "solid_queue"
 
-# Reduces boot times through caching; required in config/boot.rb
-gem "bootsnap", require: false
-
-# Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
-gem "kamal", require: false
-
-# Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
-gem "thruster", require: false
-
-# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
-
-group :development, :test do
-  gem "dotenv-rails", "~> 3.1", ">= 3.1.8"
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
-
-  # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
-  gem "brakeman", require: false
-
-  # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
-  gem "rubocop-rails-omakase", require: false
-end
-
-group :development do
-  # Use console on exceptions pages [https://github.com/rails/web-console]
-  gem "web-console"
-end
-
+# ─────────────────────────────────────────────────────────────────────────────
+# Background processing
+# ─────────────────────────────────────────────────────────────────────────────
 gem "redis", "~> 5.4", ">= 5.4.1"
 gem "sidekiq", "~> 8.0", ">= 8.0.8"
 gem "sidekiq-cron", "~> 2.3", ">= 2.3.1"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Authentication & Security
+# ─────────────────────────────────────────────────────────────────────────────
 gem "devise", "~> 4.9", ">= 4.9.4"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Email & Notifications
+# ─────────────────────────────────────────────────────────────────────────────
 gem "postmark-rails", "~> 0.22.1"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Active Storage & File Processing
+# ─────────────────────────────────────────────────────────────────────────────
+gem "image_processing", "~> 1.14"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Web server & performance
+# ─────────────────────────────────────────────────────────────────────────────
+gem "bootsnap", require: false       # Faster boot via caching
+gem "puma", ">= 7.0.4"               # HTTP server
+gem "thruster", require: false       # HTTP asset caching/compression, X-Sendfile
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Deployment
+# ─────────────────────────────────────────────────────────────────────────────
+gem "kamal", require: false          # Container-based deploys
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Platform specifics
+# ─────────────────────────────────────────────────────────────────────────────
+gem "tzinfo-data", platforms: %i[windows jruby]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Optional features (uncomment as needed)
+# ─────────────────────────────────────────────────────────────────────────────
+# gem "bcrypt", "~> 3.1.7"           # has_secure_password
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Development & Test
+# ─────────────────────────────────────────────────────────────────────────────
+group :development, :test do
+  gem "brakeman", require: false                       # Security static analysis
+  gem "debug", platforms: %i[mri windows], require: "debug/prelude"
+  gem "dotenv-rails", "~> 3.1", ">= 3.1.8"             # Env vars for dev/test
+  gem "rubocop-rails-omakase", require: false          # Ruby style (Rails Omakase)
+end
+
+group :development do
+  gem "web-console"                                    # Console on error pages
+end
