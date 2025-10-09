@@ -63,3 +63,5 @@ end
 gem "redis", "~> 5.4", ">= 5.4.1"
 gem "sidekiq", "~> 8.0", ">= 8.0.8"
 gem "sidekiq-cron", "~> 2.3", ">= 2.3.1"
+gem "devise", "~> 4.9", ">= 4.9.4"
+gem "postmark-rails", "~> 0.22.1"
