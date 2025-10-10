@@ -1,0 +1,23 @@
+@font-face {
+  font-family: "Font Awesome 6 Free";
+  font-style: normal;
+  font-weight: 900;
+  src: url("/assets/webfonts/fa-solid-900.woff2") format("woff2"),
+       url("/assets/webfonts/fa-solid-900.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Font Awesome 6 Free";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/assets/webfonts/fa-regular-400.woff2") format("woff2"),
+       url("/assets/webfonts/fa-regular-400.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Font Awesome 6 Brands";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/assets/webfonts/fa-brands-400.woff2") format("woff2"),
+       url("/assets/webfonts/fa-brands-400.woff") format("woff");
+}

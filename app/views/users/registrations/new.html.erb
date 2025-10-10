@@ -1,29 +1,116 @@
-<h2>Sign up</h2>
-
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "users/shared/error_messages", resource: resource %>
-
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+<div class="flex flex-col justify-center items-center min-h-[calc(100vh-5rem)] px-4"
+     data-controller="registration-steps">
+  <!-- Stepper -->
+  <div class="flex items-center justify-center mb-8 space-x-4">
+    <% ["Email", "Location", "Star Citizen Handle", "Password"].each_with_index do |step, i| %>
+      <div class="flex items-center">
+        <div data-registration-steps-target="stepCircle"
+             class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold bg-[var(--clr-surface-a30)] text-[var(--clr-light-a0)]">
+          <%= i + 1 %>
+        </div>
+        <span class="ml-2 text-sm text-[var(--clr-primary-a30)] font-semibold"><%= step %></span>
+        <% unless i == 3 %>
+          <div class="w-8 border-t border-[var(--clr-surface-a40)] mx-3"></div>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-  </div>
+  <!-- Registration Card -->
+  <div class="card w-full max-w-md shadow-2xl bg-[var(--clr-surface-a20)] border border-[var(--clr-surface-a40)] p-6">
+    <h2 class="text-2xl font-secondary font-semibold text-center text-[var(--clr-primary-a20)] mb-6">
+      Create Your Account
+    </h2>
 
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
 
-  <div class="actions">
-    <%= f.submit "Sign up" %>
-  </div>
-<% end %>
+      <!-- Step 1 -->
+      <div data-registration-steps-target="step">
+        <div class="field mb-5">
+          <%= f.label :email, "Email Address", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+          <div class="relative">
+            <i class="fa-solid fa-envelope absolute left-3 top-3 text-[var(--clr-light-a0)]"></i>
+            <%= f.email_field :email, autofocus: true,
+                  class: "w-full py-2 pl-10 pr-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]" %>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <button type="button" data-action="click->registration-steps#next"
+                  class="px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]">Next →</button>
+        </div>
+      </div>
 
-<%= render "users/shared/links" %>
+      <!-- Step 2: Country & Time Zone -->
+      <div data-registration-steps-target="step" class="hidden">
+        <div class="field mb-5">
+          <%= f.label :country, "Country of Residence", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+          <select id="country-select"
+                  data-countries="<%= @countries_json.html_safe %>"
+                  data-action="change->registration-steps#filterTimezones"
+                  class="w-full py-2 px-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]">
+            <option value="">Select Country</option>
+          </select>
+        </div>
+
+        <div class="field mb-5">
+          <%= f.label :time_zone, "Time Zone", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+          <select id="timezone-select"
+                  class="w-full py-2 px-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]">
+            <option value="">Select Time Zone</option>
+          </select>
+        </div>
+
+        <div class="flex justify-between">
+          <button type="button"
+                  data-action="click->registration-steps#previous"
+                  class="px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)]">
+            ← Back
+          </button>
+          <button type="button"
+                  data-action="click->registration-steps#next"
+                  class="px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]">
+            Next →
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div data-registration-steps-target="step" class="hidden">
+        <div class="field mb-5">
+          <%= f.label :star_citizen_handle, "Star Citizen Handle", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+          <%= f.text_field :star_citizen_handle,
+                class: "w-full py-2 px-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]" %>
+        </div>
+        <div class="flex justify-between">
+          <button type="button" data-action="click->registration-steps#previous"
+                  class="px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)]">← Back</button>
+          <button type="button" data-action="click->registration-steps#next"
+                  class="px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div data-registration-steps-target="step" class="hidden">
+        <div class="field mb-5" data-controller="password-visibility">
+          <%= f.label :password, "Password", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute left-3 top-3 text-[var(--clr-light-a0)]"></i>
+            <%= f.password_field :password, autocomplete: "new-password",
+                  data: { password_visibility_target: "input" },
+                  class: "w-full py-2 pl-10 pr-10 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]" %>
+            <button type="button" data-action="click->password-visibility#toggle"
+                    class="absolute right-3 top-2 text-[var(--clr-light-a0)] focus:outline-none">
+              <i data-password-visibility-target="icon" class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+        <div class="flex justify-between">
+          <button type="button" data-action="click->registration-steps#previous"
+                  class="px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)]">← Back</button>
+          <%= f.submit "Create Account",
+                class: "px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

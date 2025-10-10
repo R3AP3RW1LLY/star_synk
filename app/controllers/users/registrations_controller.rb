@@ -6,6 +6,21 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  def new
+    # Build a list of all countries using the 'countries' gem
+    @countries = ISO3166::Country.all.map do |country|
+      {
+        name: country.common_name || country.name,
+        code: country.alpha2
+      }
+    end
+
+    # Convert to JSON once (safe for embedding into HTML)
+    @countries_json = @countries.to_json
+
+    super
+  end
+
   protected
 
   def configure_permitted_parameters

@@ -90,3 +90,5 @@ end
 group :development do
   gem "web-console"                                    # Console on error pages
 end
+
+gem "countries", "~> 8.0", ">= 8.0.4"

@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Roboto+Slab:wght@400;600&display=swap');
-@import "@fortawesome/fontawesome-free/css/all.min.css";
+
+
+@import "./fontawesome_fix.css";
 
 @import "tailwindcss";
 
@@ -62,7 +64,6 @@
 /* -------------------------------------------------------------------------- */
 /* Base Theme                                                                 */
 /* -------------------------------------------------------------------------- */
-
 @layer base {
   html {
     font-family: var(--font-primary);

@@ -15,3 +15,9 @@ application.register("center-content", CenterContentController)
 
 import PasswordVisibilityController from "./password_visibility_controller"
 application.register("password-visibility", PasswordVisibilityController)
+
+import RegistrationStepsController from "./registration_steps_controller"
+application.register("registration-steps", RegistrationStepsController)
+
+import SearchableSelectController from "./searchable_select_controller"
+application.register("searchable-select", SearchableSelectController)

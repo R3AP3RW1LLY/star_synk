@@ -1,0 +1,4 @@
+set -e
+mkdir -p app/assets/webfonts
+cp -r node_modules/@fortawesome/fontawesome-free/webfonts/* app/assets/webfonts/
+echo "✅ Font Awesome webfonts synced to app/assets/webfonts/"

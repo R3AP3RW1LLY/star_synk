@@ -21,6 +21,8 @@ Rails.application.routes.draw do
             },
             path: ""
 
+  get "/timezones", to: "timezones#index"
+
   mount ActionCable.server => "/cable"
   mount Sidekiq::Web => "/sidekiq"
 end
