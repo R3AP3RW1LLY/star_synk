@@ -12,8 +12,8 @@ export default class extends Controller {
   }
 
   hide() {
-    this.searchTarget.classList.add("hidden")
-    this.filter()
+    setTimeout(() => this.searchTarget.classList.add("hidden"), 150)
+    this.filter() // reset view
   }
 
   filter() {
