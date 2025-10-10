@@ -15,5 +15,5 @@ application.register("password-visibility", PasswordVisibilityController)
 import RegistrationStepsController from "./registration_steps_controller"
 application.register("registration-steps", RegistrationStepsController)
 
-import SearchableSeclectController from "./searchable_select_controller"
-application.register("searchable-select", SearchableSeclectController)
+import SearchableDropdownController from "./searchable_select_controller"
+application.register("searchable-dropdown", SearchableDropdownController)

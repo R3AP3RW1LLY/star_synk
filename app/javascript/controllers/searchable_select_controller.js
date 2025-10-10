@@ -1,6 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Filters the options of a select element as you type in the overlay input
 export default class extends Controller {
   static targets = ["select", "search"]
 
@@ -8,12 +7,21 @@ export default class extends Controller {
     this.originalOptions = Array.from(this.selectTarget.options)
   }
 
+  show() {
+    this.searchTarget.classList.remove("hidden")
+  }
+
+  hide() {
+    this.searchTarget.classList.add("hidden")
+    this.filter()
+  }
+
   filter() {
     const query = this.searchTarget.value.toLowerCase()
-    const matches = this.originalOptions.filter(o =>
-      o.textContent.toLowerCase().includes(query)
-    )
     this.selectTarget.innerHTML = ""
-    matches.forEach(o => this.selectTarget.appendChild(o))
+    const matches = this.originalOptions.filter(opt =>
+      opt.textContent.toLowerCase().includes(query)
+    )
+    matches.forEach(opt => this.selectTarget.appendChild(opt))
   }
 }
