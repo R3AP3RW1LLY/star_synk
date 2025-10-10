@@ -1,11 +1,12 @@
-<div class="flex flex-col justify-center items-center min-h-[calc(100vh-5rem)] px-4"
-     data-controller="registration-steps">
+<div class="flex flex-col justify-center items-center min-h-[calc(100vh-5rem)] px-4" data-controller="registration-steps">
+  <div id="country-data" class="hidden"><%= @countries_json %></div>
+
   <!-- Stepper -->
   <div class="flex items-center justify-center mb-8 space-x-4">
     <% ["Email", "Location", "Star Citizen Handle", "Password"].each_with_index do |step, i| %>
       <div class="flex items-center">
-        <div data-registration-steps-target="stepCircle"
-             class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold bg-[var(--clr-surface-a30)] text-[var(--clr-light-a0)]">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold bg-[var(--clr-surface-a30)] text-[var(--clr-light-a0)]"
+             data-registration-steps-target="stepCircle">
           <%= i + 1 %>
         </div>
         <span class="ml-2 text-sm text-[var(--clr-primary-a30)] font-semibold"><%= step %></span>
@@ -16,11 +17,8 @@
     <% end %>
   </div>
 
-  <!-- Registration Card -->
   <div class="card w-full max-w-md shadow-2xl bg-[var(--clr-surface-a20)] border border-[var(--clr-surface-a40)] p-6">
-    <h2 class="text-2xl font-secondary font-semibold text-center text-[var(--clr-primary-a20)] mb-6">
-      Create Your Account
-    </h2>
+    <h2 class="text-2xl font-secondary font-semibold text-center text-[var(--clr-primary-a20)] mb-6">Create Your Account</h2>
 
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
 
@@ -36,41 +34,29 @@
         </div>
         <div class="flex justify-end">
           <button type="button" data-action="click->registration-steps#next"
-                  class="px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]">Next →</button>
-        </div>
-      </div>
-
-      <!-- Step 2: Country & Time Zone -->
-      <div data-registration-steps-target="step" class="hidden">
-        <div class="field mb-5">
-          <%= f.label :country, "Country of Residence", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
-          <select id="country-select"
-                  data-countries="<%= @countries_json.html_safe %>"
-                  data-action="change->registration-steps#filterTimezones"
-                  class="w-full py-2 px-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]">
-            <option value="">Select Country</option>
-          </select>
-        </div>
-
-        <div class="field mb-5">
-          <%= f.label :time_zone, "Time Zone", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
-          <select id="timezone-select"
-                  class="w-full py-2 px-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]">
-            <option value="">Select Time Zone</option>
-          </select>
-        </div>
-
-        <div class="flex justify-between">
-          <button type="button"
-                  data-action="click->registration-steps#previous"
-                  class="px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)]">
-            ← Back
-          </button>
-          <button type="button"
-                  data-action="click->registration-steps#next"
                   class="px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]">
             Next →
           </button>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div data-registration-steps-target="step" class="hidden">
+        <div class="field mb-5">
+          <label class="block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1">Country of Residence</label>
+          <div id="country-dropdown"></div>
+        </div>
+
+        <div class="field mb-5">
+          <label class="block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1">Time Zone</label>
+          <div id="timezone-dropdown"></div>
+        </div>
+
+        <div class="flex justify-between">
+          <button type="button" data-action="click->registration-steps#previous"
+                  class="px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)]">← Back</button>
+          <button type="button" data-action="click->registration-steps#next"
+                  class="px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]">Next →</button>
         </div>
       </div>
 
@@ -90,8 +76,8 @@
       </div>
 
       <!-- Step 4 -->
-      <div data-registration-steps-target="step" class="hidden">
-        <div class="field mb-5" data-controller="password-visibility">
+      <div data-registration-steps-target="step" class="hidden" data-controller="password-visibility">
+        <div class="field mb-5">
           <%= f.label :password, "Password", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
           <div class="relative">
             <i class="fa-solid fa-lock absolute left-3 top-3 text-[var(--clr-light-a0)]"></i>
@@ -104,11 +90,11 @@
             </button>
           </div>
         </div>
+
         <div class="flex justify-between">
           <button type="button" data-action="click->registration-steps#previous"
                   class="px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)]">← Back</button>
-          <%= f.submit "Create Account",
-                class: "px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]" %>
+          <%= f.submit "Create Account", class: "px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]" %>
         </div>
       </div>
     <% end %>

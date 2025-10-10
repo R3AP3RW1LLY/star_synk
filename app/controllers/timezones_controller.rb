@@ -4,7 +4,6 @@ class TimezonesController < ApplicationController
 
     if country_code.present?
       begin
-        # Use Rails’ built-in mapping of time zones per country
         zones = ActiveSupport::TimeZone.country_zones(country_code.upcase).map(&:name)
       rescue StandardError
         zones = []
