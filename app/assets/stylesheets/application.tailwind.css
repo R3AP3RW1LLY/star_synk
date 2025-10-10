@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Roboto+Slab:wght@400;600&display=swap');
+@import "@fortawesome/fontawesome-free/css/all.min.css";
 
 @import "tailwindcss";
 
@@ -147,5 +148,16 @@
 
   .text-muted {
     color: var(--clr-surface-a50);
+  }
+}
+
+@layer components {
+  .nav-link {
+    @apply text-sm font-medium text-[var(--clr-primary-a10)] transition-colors duration-200;
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    @apply text-[var(--clr-light-a0)];
   }
 }

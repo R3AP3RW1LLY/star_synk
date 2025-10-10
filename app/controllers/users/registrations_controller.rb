@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Users::RegistrationsController < Devise::RegistrationsController
+  layout "marketing"
   respond_to :html, :turbo_stream
 
   before_action :configure_permitted_parameters, if: :devise_controller?

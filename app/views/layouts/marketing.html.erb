@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[var(--clr-surface-a10)]">
+  <head>
+    <title><%= content_for?(:title) ? yield(:title) : "Star Synk" %></title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+  </head>
+
+  <body class="min-h-screen flex flex-col font-[var(--font-primary)] bg-[var(--clr-surface-a10)] text-[var(--clr-primary-a40)]">
+    <%= render "shared/marketing_nav" %>
+
+    <main class="flex-grow bg-[var(--clr-surface-a10)]">
+      <%= yield %>
+    </main>
+
+    <%= render "shared/marketing_footer" %>
+  </body>
+</html>

@@ -1,0 +1,70 @@
+<header class="sticky top-0 z-50 bg-[var(--clr-surface-a20)] border-b border-[var(--clr-surface-a40)] text-[var(--clr-primary-a40)]">
+  <nav aria-label="Global" class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
+
+    <div class="flex lg:flex-1 items-center space-x-2">
+      <%= link_to root_path, class: "-m-1.5 flex items-center space-x-2" do %>
+        <%= image_tag "star_synk_logo_color.svg", alt: "Star Synk", class: "h-14 w-auto" %>
+      <% end %>
+    </div>
+
+    <!-- Mobile menu button -->
+    <div class="flex lg:hidden">
+      <button
+        type="button"
+        data-action="click->mobile-menu#open"
+        class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-[var(--clr-primary-a40)] hover:text-[var(--clr-light-a0)]"
+      >
+        <span class="sr-only">Open main menu</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Desktop Nav Links -->
+    <div class="hidden lg:flex lg:gap-x-10" data-controller="active-link">
+      <%= link_to "Home", root_path, class: "nav-link" %>
+      <%= link_to "About", about_path, class: "nav-link" %>
+      <%= link_to "Features", features_path, class: "nav-link" %>
+      <%= link_to "Contact Us", contact_path, class: "nav-link" %>
+    </div>
+
+    <!-- Login Button -->
+    <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+      <%= link_to "Log in →", new_user_session_path, class: "nav-link" %>
+    </div>
+  </nav>
+
+  <!-- Mobile Drawer -->
+  <div
+    data-controller="mobile-menu"
+    data-mobile-menu-target="menu"
+    class="hidden fixed inset-0 z-40 bg-[var(--clr-surface-a20)] p-6 sm:max-w-sm sm:ml-auto sm:rounded-lg shadow-lg border border-[var(--clr-surface-a40)]"
+  >
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <%= link_to root_path, class: "-m-1.5 flex items-center space-x-2" do %>
+          <%= image_tag "star_synk_logo_color.svg", alt: "Star Synk", class: "h-14 w-auto" %>
+        <% end %>
+      </div>
+      <button
+        type="button"
+        data-action="click->mobile-menu#close"
+        class="-m-2.5 rounded-md p-2.5 text-[var(--clr-primary-a40)] hover:text-[var(--clr-light-a0)]"
+      >
+        <span class="sr-only">Close menu</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="mt-6 space-y-4">
+      <%= link_to "Home", root_path, class: "block nav-link" %>
+      <%= link_to "About", about_path, class: "block nav-link" %>
+      <%= link_to "Features", features_path, class: "block nav-link" %>
+      <%= link_to "Contact Us", contact_path, class: "block nav-link" %>
+      <%= link_to "Log in →", new_user_session_path, class: "block nav-link" %>
+    </div>
+  </div>
+</header>
