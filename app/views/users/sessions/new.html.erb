@@ -1,26 +1,77 @@
-<h2>Log in</h2>
+<%= content_for :title, "Log In" %>
 
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
+<div
+  data-controller="center-content"
+  class="flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8 bg-[var(--clr-surface-a10)]"
+>
+  <div class="card w-full max-w-md p-8 rounded-lg shadow-2xl bg-[var(--clr-surface-a20)] border border-[var(--clr-surface-a40)]">
+    <h2 class="text-2xl font-bold text-center mb-6 text-[var(--clr-primary-a20)] font-[var(--font-secondary)]">
+      Log In
+    </h2>
 
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "current-password" %>
-  </div>
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <!-- Email Field -->
+      <div class="field relative mb-5">
+        <%= f.label :email, class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+        <div class="relative">
+          <i class="fa-solid fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-[var(--clr-light-a0)] text-sm"></i>
+          <%= f.email_field :email,
+                autofocus: true,
+                autocomplete: "email",
+                class: "w-full pl-10 pr-3 py-2 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]" %>
+        </div>
+      </div>
 
-  <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
+      <!-- Password Field -->
+      <div class="field relative mb-5">
+        <%= f.label :password, class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+        <div class="relative" data-controller="password-visibility">
+          <i class="fa-solid fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-[var(--clr-light-a0)] text-sm"></i>
+
+          <%= f.password_field :password,
+                autocomplete: "current-password",
+                data: { password_visibility_target: "input" },
+                class: "w-full pl-10 pr-10 py-2 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]" %>
+
+          <button
+            type="button"
+            data-action="click->password-visibility#toggle"
+            class="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none p-1 m-0 cursor-pointer focus:outline-none"
+            aria-label="Toggle password visibility"
+          >
+            <i data-password-visibility-target="icon" class="fa-solid fa-eye-slash text-[var(--clr-light-a0)] hover:text-[var(--clr-primary-a20)] text-sm"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ✅ Remember Me -->
+      <% if devise_mapping.rememberable? %>
+        <div class="field flex justify-center mb-5">
+          <label class="flex items-center space-x-2 text-[var(--clr-primary-a30)] text-sm cursor-pointer relative">
+            <%= f.check_box :remember_me,
+                  class: "appearance-none size-4 border border-[var(--clr-surface-a40)] rounded-sm bg-[var(--clr-surface-a30)] 
+                          checked:bg-[var(--clr-primary-a0)] checked:border-[var(--clr-primary-a0)] 
+                          focus:ring-2 focus:ring-[var(--clr-primary-a30)] focus:outline-none
+                          relative after:content-['✔'] after:absolute after:inset-0 after:flex after:items-center after:justify-center 
+                          after:text-white after:text-[0.6rem] after:opacity-0 checked:after:opacity-100 after:transition-opacity after:duration-200" %>
+            <span>Remember me</span>
+          </label>
+        </div>
+      <% end %>
+
+      <!-- Submit -->
+      <div class="actions">
+        <%= f.submit "Log In",
+              class: "w-full py-2 rounded-md bg-[var(--clr-primary-a0)] hover:bg-[var(--clr-primary-a20)] text-[var(--clr-light-a0)] font-semibold transition-colors duration-200" %>
+      </div>
+    <% end %>
+
+    <!-- Links -->
+    <div class="mt-6 flex justify-between text-sm">
+      <%= link_to "Forgot password?", new_password_path(resource_name),
+            class: "text-[var(--clr-primary-a20)] hover:text-[var(--clr-primary-a0)] font-medium" %>
+      <%= link_to "Create account", new_registration_path(resource_name),
+            class: "text-[var(--clr-primary-a20)] hover:text-[var(--clr-primary-a0)] font-medium" %>
     </div>
-  <% end %>
-
-  <div class="actions">
-    <%= f.submit "Log in" %>
   </div>
-<% end %>
-
-<%= render "users/shared/links" %>
+</div>

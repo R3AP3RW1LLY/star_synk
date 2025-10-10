@@ -9,3 +9,9 @@ application.register("mobile-menu", MobileMenuController)
 
 import ActiveLinkController from "./active_link_controller"
 application.register("active-link", ActiveLinkController)
+
+import CenterContentController from "./center_content_controller"
+application.register("center-content", CenterContentController)
+
+import PasswordVisibilityController from "./password_visibility_controller"
+application.register("password-visibility", PasswordVisibilityController)
