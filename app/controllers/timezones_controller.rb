@@ -1,11 +1,17 @@
 class TimezonesController < ApplicationController
   def index
-    country_code = params[:country]
+    country_code = params[:country].to_s.upcase.strip
 
     if country_code.present?
       begin
-        zones = ActiveSupport::TimeZone.country_zones(country_code.upcase).map(&:name)
-      rescue StandardError
+        country = TZInfo::Country.get(country_code)
+        zones = country.zones.map do |zone|
+          {
+            id: zone.identifier,
+            name: zone.identifier.split("/").last.tr("_", " ")
+          }
+        end
+      rescue TZInfo::InvalidCountryCode
         zones = []
       end
     else

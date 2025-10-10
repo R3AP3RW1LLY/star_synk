@@ -1,34 +1,34 @@
+// app/javascript/controllers/center_content_controller.js
 import { Controller } from "@hotwired/stimulus"
 
-// Dynamically centers a main content container between the header and footer.
-// Keeps footer visible, prevents scrollbars, and centers vertically.
+// Centers content between the navbar and footer while allowing dynamic height (for stepped forms)
 export default class extends Controller {
   connect() {
-    this.updateLayout()
-    window.addEventListener("resize", this.updateLayout.bind(this))
+    this.recenter()
+    window.addEventListener("resize", this.recenter.bind(this))
+
+    // Listen for custom events (e.g. when switching form steps)
+    document.addEventListener("form:updated", this.recenter.bind(this))
   }
 
   disconnect() {
-    window.removeEventListener("resize", this.updateLayout.bind(this))
-    document.body.style.overflow = ""
-    document.body.style.height = ""
+    window.removeEventListener("resize", this.recenter.bind(this))
+    document.removeEventListener("form:updated", this.recenter.bind(this))
   }
 
-  updateLayout() {
-    const header = document.querySelector("header")
+  recenter() {
+    const nav = document.querySelector("nav")
     const footer = document.querySelector("footer")
-
-    const headerHeight = header ? header.offsetHeight : 0
+    const navHeight = nav ? nav.offsetHeight : 0
     const footerHeight = footer ? footer.offsetHeight : 0
-    const availableHeight = window.innerHeight - headerHeight - footerHeight
+    const viewportHeight = window.innerHeight
+    const availableHeight = viewportHeight - navHeight - footerHeight
 
-    // Set content height to fill remaining space perfectly
+    // Let form expand naturally, but keep it centered vertically
     this.element.style.minHeight = `${availableHeight}px`
     this.element.style.display = "flex"
-    this.element.style.alignItems = "center"
+    this.element.style.flexDirection = "column"
     this.element.style.justifyContent = "center"
-
-    // No scrolling; ensure full viewport fit
-    document.body.style.overflow = "hidden"
+    this.element.style.alignItems = "center"
   }
 }
