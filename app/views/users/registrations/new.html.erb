@@ -154,16 +154,28 @@
                           border border-[var(--clr-surface-a40)]
                           focus:outline-none focus:ring-2
                           focus:ring-[var(--clr-primary-a20)]" %>
-            <!-- Spinner (only visible while checker runs) -->
             <i id="handle-spinner"
                class="fa-solid fa-spinner fa-spin text-[var(--clr-primary-a0)]
                       absolute right-3 hidden text-sm"></i>
           </div>
 
-          <!-- Validation Message + Icons -->
-          <p id="handle-validation-msg" class="mt-1 text-sm flex items-center space-x-1">
-            <!-- Icons will be injected dynamically by JS -->
-          </p>
+          <!-- Validation Message -->
+          <p id="handle-validation-msg" class="mt-1 text-sm flex items-center space-x-1"></p>
+
+          <!-- RSI Ownership Checkbox (centered and styled) -->
+          <div id="ownership-checkbox" class="hidden mt-4 flex justify-center">
+            <label class="relative flex items-center space-x-2 text-[var(--clr-light-a0)] text-sm">
+              <%= f.check_box :confirmed_rsi_ownership,
+                              id: "user_confirmed_rsi_ownership",
+                              class: "w-5 h-5 appearance-none border border-[var(--clr-surface-a40)] rounded relative
+                                       checked:bg-[var(--clr-primary-a0)] checked:border-[var(--clr-primary-a0)]
+                                       focus:ring-2 focus:ring-[var(--clr-primary-a20)]
+                                       after:content-['✓'] after:text-[var(--clr-light-a0)]
+                                       after:absolute after:inset-0 after:flex after:items-center after:justify-center
+                                       after:text-[0.9rem] after:font-bold after:hidden checked:after:flex transition-all" %>
+              <span>I confirm ownership of this RSI account</span>
+            </label>
+          </div>
         </div>
 
         <div class="flex justify-between items-center mt-4">
@@ -200,7 +212,6 @@
                           focus:ring-[var(--clr-primary-a20)]" %>
           </div>
         </div>
-
         <div class="field relative mb-5">
           <%= f.label :password_confirmation, "Confirm Password",
                       class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
@@ -215,7 +226,6 @@
                           focus:ring-[var(--clr-primary-a20)]" %>
           </div>
         </div>
-
         <div class="flex justify-between items-center">
           <button type="button" data-action="click->registration-steps#previous"
                   class="flex items-center px-4 py-2

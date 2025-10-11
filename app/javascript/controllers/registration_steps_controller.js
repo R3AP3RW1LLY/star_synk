@@ -1,6 +1,7 @@
 // app/javascript/controllers/registration_steps_controller.js
 import { Controller } from "@hotwired/stimulus"
 
+// Handles registration form navigation, validation, and RSI handle verification
 export default class extends Controller {
   static targets = ["step", "stepCircle"]
 
@@ -8,6 +9,7 @@ export default class extends Controller {
     this.currentStep = 1
     this.totalSteps = this.stepTargets.length
     this.debounceTimer = null
+    this.validHandle = false
 
     if (this.isDev()) console.log("✅ registration-steps controller connected")
     this.showStep(this.currentStep)
@@ -69,23 +71,30 @@ export default class extends Controller {
     const nextBtn = document.getElementById("step3-next-btn")
     const msg = document.getElementById("handle-validation-msg")
     const spinner = document.getElementById("handle-spinner")
+    const checkboxWrapper = document.getElementById("ownership-checkbox")
+    const checkbox = document.getElementById("user_confirmed_rsi_ownership")
 
+    // Reset UI
     msg.innerHTML = ""
     msg.className = "mt-1 text-sm flex items-center space-x-1"
     nextBtn.disabled = true
     nextBtn.classList.add("opacity-50", "cursor-not-allowed")
+    this.validHandle = false
 
     if (spinner) spinner.classList.add("hidden")
+    if (checkboxWrapper) checkboxWrapper.classList.add("hidden")
 
+    // Local validation first
     if (!/^[A-Za-z0-9]{3,100}$/.test(handle)) {
       msg.innerHTML = `
         <span style="color: var(--clr-warning-a0);" class="flex items-center space-x-1">
           <i class="fa-solid fa-xmark"></i>
-          <span>Handle must be 3–100 characters.</span>
+          <span>Must be 3–100 characters, no spaces or symbols.</span>
         </span>`
       return
     }
 
+    // Show spinner while checking
     if (spinner) spinner.classList.remove("hidden")
 
     this.debounceTimer = setTimeout(async () => {
@@ -102,14 +111,30 @@ export default class extends Controller {
               <i class="fa-solid fa-check"></i>
               <span>${cleanMessage}</span>
             </span>`
-          nextBtn.disabled = false
-          nextBtn.classList.remove("opacity-50", "cursor-not-allowed")
+
+          this.validHandle = true
+          if (checkboxWrapper) checkboxWrapper.classList.remove("hidden")
+
+          // Enable checkbox event
+          if (checkbox) {
+            checkbox.checked = false
+            checkbox.removeEventListener("change", this._checkboxListener)
+            this._checkboxListener = this.toggleStep3Next.bind(this)
+            checkbox.addEventListener("change", this._checkboxListener)
+          }
+
+          // Initially keep next disabled until user checks the box
+          this.updateStep3Next()
         } else {
           msg.innerHTML = `
             <span style="color: var(--clr-danger-a0);" class="flex items-center space-x-1">
               <i class="fa-solid fa-xmark"></i>
               <span>${cleanMessage}</span>
             </span>`
+
+          this.validHandle = false
+          if (checkboxWrapper) checkboxWrapper.classList.add("hidden")
+          this.updateStep3Next()
         }
       } catch (error) {
         if (spinner) spinner.classList.add("hidden")
@@ -118,8 +143,26 @@ export default class extends Controller {
             <i class="fa-solid fa-triangle-exclamation"></i>
             <span>Unable to verify handle. Please try again.</span>
           </span>`
+        this.validHandle = false
+        if (checkboxWrapper) checkboxWrapper.classList.add("hidden")
+        this.updateStep3Next()
       }
     }, 500)
+  }
+
+  // === Enable Next only if handle valid AND checkbox checked ===
+  toggleStep3Next() {
+    this.updateStep3Next()
+  }
+
+  updateStep3Next() {
+    const checkbox = document.getElementById("user_confirmed_rsi_ownership")
+    const nextBtn = document.getElementById("step3-next-btn")
+    const ready = this.validHandle && checkbox && checkbox.checked
+
+    nextBtn.disabled = !ready
+    nextBtn.classList.toggle("opacity-50", !ready)
+    nextBtn.classList.toggle("cursor-not-allowed", !ready)
   }
 
   // === Utility ===
