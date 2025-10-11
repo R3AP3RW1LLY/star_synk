@@ -7,7 +7,8 @@
   <div class="flex items-center justify-center mb-8 space-x-4">
     <% ["Email", "Location", "Star Citizen Handle", "Password"].each_with_index do |step, i| %>
       <div class="flex items-center justify-center">
-        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold bg-[var(--clr-surface-a30)] text-[var(--clr-light-a0)]"
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold
+                    bg-[var(--clr-surface-a30)] text-[var(--clr-light-a0)]"
              data-registration-steps-target="stepCircle"
              data-step="<%= i + 1 %>">
           <%= i + 1 %>
@@ -21,147 +22,189 @@
   </div>
 
   <!-- Card -->
-  <div class="card w-full max-w-md shadow-2xl bg-[var(--clr-surface-a20)] border border-[var(--clr-surface-a40)] p-8">
-    <h2 class="text-2xl font-secondary font-semibold text-center text-[var(--clr-primary-a20)] mb-6">
+  <div class="card w-full max-w-md shadow-2xl bg-[var(--clr-surface-a20)]
+              border border-[var(--clr-surface-a40)] p-8">
+    <h2 class="text-2xl font-secondary font-semibold text-center
+               text-[var(--clr-primary-a20)] mb-6">
       Create Your Account
     </h2>
 
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
 
-      <!-- STEP 1: Email -->
+      <!-- STEP 1: EMAIL -->
       <div data-registration-steps-target="step" data-step="1" class="step-block">
         <div class="field mb-5 relative">
-          <%= f.label :email, "Email Address", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+          <%= f.label :email, "Email Address",
+                      class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
           <div class="relative">
-            <i class="fa-solid fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
-            <%= f.email_field :email,
-                  id: "user_email",
-                  autocomplete: "email",
+            <i class="fa-solid fa-envelope absolute left-3 top-1/2 -translate-y-1/2
+                       text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
+            <%= f.email_field :email, id: "user_email", autocomplete: "email",
                   data: { action: "input->registration-steps#validateEmail" },
-                  class: "w-full py-2 pl-10 pr-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]" %>
+                  class: "w-full py-2 pl-10 pr-3 rounded-md
+                          bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)]
+                          border border-[var(--clr-surface-a40)]
+                          focus:outline-none focus:ring-2
+                          focus:ring-[var(--clr-primary-a20)]" %>
           </div>
         </div>
         <div class="flex justify-end items-center">
           <button type="button" id="step1-next-btn" disabled
                   data-action="click->registration-steps#next"
-                  class="flex items-center px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md opacity-50 cursor-not-allowed disabled:pointer-events-none transition-all">
+                  class="flex items-center px-4 py-2
+                         bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)]
+                         rounded-md opacity-50 cursor-not-allowed
+                         disabled:pointer-events-none transition-all">
             Next <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
           </button>
         </div>
       </div>
 
-      <!-- STEP 2: Country / Time Zone -->
+      <!-- STEP 2: COUNTRY + TIME ZONE -->
       <div data-registration-steps-target="step" data-step="2" class="hidden step-block">
         <div class="field mb-5 relative">
-          <%= f.label :country, "Country of Residence", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+          <%= f.label :country, "Country of Residence",
+                      class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
           <div class="relative">
-            <i class="fa-solid fa-globe absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
-            <input list="country-list" id="country-select" name="<%= f.object_name %>[country]"
-                   placeholder="Start typing..."
+            <i class="fa-solid fa-globe absolute left-3 top-1/2 -translate-y-1/2
+                       text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
+            <input list="country-list" id="country-select"
+                   name="<%= f.object_name %>[country]" placeholder="Start typing..."
                    data-action="change->registration-steps#updateTimezones"
-                   class="w-full py-2 pl-10 pr-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]">
+                   class="w-full py-2 pl-10 pr-3 rounded-md
+                          bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)]
+                          border border-[var(--clr-surface-a40)]
+                          focus:outline-none focus:ring-2
+                          focus:ring-[var(--clr-primary-a20)]">
             <datalist id="country-list">
-              <% ISO3166::Country.all.sort_by { |c| c.common_name || c.iso_short_name || c.alpha2 }.each do |country| %>
-                <option value="<%= country.common_name || country.iso_short_name %>" data-alpha2="<%= country.alpha2 %>"></option>
+              <% ISO3166::Country.all.sort_by(&:common_name).each do |country| %>
+                <option value="<%= country.common_name %>"></option>
               <% end %>
             </datalist>
           </div>
         </div>
 
         <div class="field mb-5 relative">
-          <%= f.label :time_zone, "Time Zone", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+          <%= f.label :time_zone, "Time Zone",
+                      class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
           <div class="relative">
-            <i class="fa-solid fa-clock absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
-            <input list="timezone-list" id="timezone-select" name="<%= f.object_name %>[time_zone]"
+            <i class="fa-solid fa-clock absolute left-3 top-1/2 -translate-y-1/2
+                       text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
+            <input list="timezone-list" id="timezone-select"
+                   name="<%= f.object_name %>[time_zone]"
                    placeholder="Select a country first..."
                    disabled
-                   class="w-full py-2 pl-10 pr-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]">
+                   class="w-full py-2 pl-10 pr-3 rounded-md
+                          bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)]
+                          border border-[var(--clr-surface-a40)]
+                          focus:outline-none focus:ring-2
+                          focus:ring-[var(--clr-primary-a20)]">
             <datalist id="timezone-list"></datalist>
           </div>
         </div>
 
         <div class="flex justify-between items-center">
           <button type="button" data-action="click->registration-steps#previous"
-                  class="flex items-center px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)] transition-all">
+                  class="flex items-center px-4 py-2
+                         bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)]
+                         rounded-md hover:bg-[var(--clr-surface-a30)] transition-all">
             <i class="fa-solid fa-arrow-left mr-2 text-sm"></i>Back
           </button>
           <button type="button" id="step2-next-btn" disabled
                   data-action="click->registration-steps#next"
-                  class="flex items-center px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md opacity-50 cursor-not-allowed disabled:pointer-events-none transition-all">
+                  class="flex items-center px-4 py-2
+                         bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)]
+                         rounded-md opacity-50 cursor-not-allowed
+                         disabled:pointer-events-none transition-all">
             Next <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
           </button>
         </div>
       </div>
 
-      <!-- STEP 3: RSI Handle + Checkbox -->
+      <!-- STEP 3: STAR CITIZEN HANDLE -->
       <div data-registration-steps-target="step" data-step="3" class="hidden step-block">
         <div class="field mb-2 relative">
-          <%= f.label :star_citizen_handle, "Star Citizen Handle", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+          <%= f.label :star_citizen_handle, "Star Citizen Handle",
+                      class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
           <div class="relative flex items-center">
-            <i class="fa-solid fa-user-astronaut absolute left-3 text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
-            <%= f.text_field :star_citizen_handle,
-                  id: "user_star_citizen_handle",
+            <i class="fa-solid fa-user-astronaut absolute left-3
+                       text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
+            <%= f.text_field :star_citizen_handle, id: "user_star_citizen_handle",
                   data: { action: "input->registration-steps#checkHandle" },
-                  class: "w-full py-2 pl-10 pr-10 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]" %>
-            <i id="handle-spinner" class="fa-solid fa-spinner fa-spin text-[var(--clr-primary-a0)] absolute right-3 hidden text-sm"></i>
+                  class: "w-full py-2 pl-10 pr-10 rounded-md
+                          bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)]
+                          border border-[var(--clr-surface-a40)]
+                          focus:outline-none focus:ring-2
+                          focus:ring-[var(--clr-primary-a20)]" %>
+            <i id="handle-spinner"
+               class="fa-solid fa-spinner fa-spin text-[var(--clr-primary-a0)]
+                      absolute right-3 hidden text-sm"></i>
           </div>
           <p id="handle-validation-msg" class="mt-1 text-sm"></p>
         </div>
 
-        <div id="rsi-confirm-checkbox" class="hidden mt-3 flex items-center space-x-2">
-          <%= f.check_box :confirmed_rsi_ownership,
-                id: "user_confirmed_rsi_ownership",
-                data: { action: "change->registration-steps#toggleRsiConfirmation" },
-                class: "h-4 w-4 rounded border-gray-300 text-[var(--clr-primary-a0)] focus:ring-[var(--clr-primary-a20)]" %>
-          <%= f.label :confirmed_rsi_ownership,
-                "I confirm that I am the owner of this RSI account",
-                class: "text-sm text-[var(--clr-light-a0)]" %>
-        </div>
-
         <div class="flex justify-between items-center mt-4">
           <button type="button" data-action="click->registration-steps#previous"
-                  class="flex items-center px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)] transition-all">
+                  class="flex items-center px-4 py-2
+                         bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)]
+                         rounded-md hover:bg-[var(--clr-surface-a30)] transition-all">
             <i class="fa-solid fa-arrow-left mr-2 text-sm"></i>Back
           </button>
           <button type="button" id="step3-next-btn" disabled
                   data-action="click->registration-steps#next"
-                  class="flex items-center px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md opacity-50 cursor-not-allowed disabled:pointer-events-none transition-all">
+                  class="flex items-center px-4 py-2
+                         bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)]
+                         rounded-md opacity-50 cursor-not-allowed
+                         disabled:pointer-events-none transition-all">
             Next <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
           </button>
         </div>
       </div>
 
-      <!-- STEP 4: Passwords -->
+      <!-- STEP 4: PASSWORD -->
       <div data-registration-steps-target="step" data-step="4" class="hidden step-block">
         <div class="field relative mb-5">
-          <%= f.label :password, "Password", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+          <%= f.label :password, "Password",
+                      class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
           <div class="relative">
-            <i class="fa-solid fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
-            <%= f.password_field :password,
-                  autocomplete: "new-password",
-                  class: "w-full pl-10 pr-10 py-2 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]" %>
+            <i class="fa-solid fa-lock absolute left-3 top-1/2 -translate-y-1/2
+                       text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
+            <%= f.password_field :password, autocomplete: "new-password",
+                  class: "w-full pl-10 pr-10 py-2 rounded-md
+                          bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)]
+                          border border-[var(--clr-surface-a40)]
+                          focus:outline-none focus:ring-2
+                          focus:ring-[var(--clr-primary-a20)]" %>
           </div>
         </div>
-
         <div class="field relative mb-5">
-          <%= f.label :password_confirmation, "Confirm Password", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+          <%= f.label :password_confirmation, "Confirm Password",
+                      class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
           <div class="relative">
-            <i class="fa-solid fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
-            <%= f.password_field :password_confirmation,
-                  autocomplete: "new-password",
-                  class: "w-full pl-10 pr-10 py-2 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]" %>
+            <i class="fa-solid fa-lock absolute left-3 top-1/2 -translate-y-1/2
+                       text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
+            <%= f.password_field :password_confirmation, autocomplete: "new-password",
+                  class: "w-full pl-10 pr-10 py-2 rounded-md
+                          bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)]
+                          border border-[var(--clr-surface-a40)]
+                          focus:outline-none focus:ring-2
+                          focus:ring-[var(--clr-primary-a20)]" %>
           </div>
         </div>
-
         <div class="flex justify-between items-center">
           <button type="button" data-action="click->registration-steps#previous"
-                  class="flex items-center px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)] transition-all">
+                  class="flex items-center px-4 py-2
+                         bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)]
+                         rounded-md hover:bg-[var(--clr-surface-a30)] transition-all">
             <i class="fa-solid fa-arrow-left mr-2 text-sm"></i>Back
           </button>
           <%= f.submit "Register",
-                class: "flex items-center px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)] transition-all" %>
+                class: "flex items-center px-4 py-2
+                       bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)]
+                       rounded-md hover:bg-[var(--clr-primary-a20)] transition-all" %>
         </div>
       </div>
+
     <% end %>
   </div>
 </div>

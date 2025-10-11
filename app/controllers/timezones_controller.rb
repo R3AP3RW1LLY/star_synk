@@ -1,26 +1,26 @@
+# app/controllers/timezones_controller.rb
 class TimezonesController < ApplicationController
-  # Public JSON endpoint for registration form (no auth, no CSRF)
-  protect_from_forgery with: :null_session
+  # Public endpoint for the registration form
+  skip_before_action :verify_authenticity_token
+  skip_before_action :authenticate_user!, raise: false if respond_to?(:authenticate_user!)
 
   def index
     country_name = params[:country].to_s.strip
     return render json: [] if country_name.blank?
 
-    # Try to resolve country by name or code
-    country =
-      ISO3166::Country.find_country_by_alpha2(country_name.upcase) ||
-      ISO3166::Country.find_country_by_alpha3(country_name.upcase) ||
-      ISO3166::Country.find_country_by_name(country_name)
-
-    # If not found, return empty array
+    country = ISO3166::Country.find_country_by_name(country_name) ||
+              ISO3166::Country[country_name]
     return render json: [] unless country
 
-    # Always produce simple array of timezone strings
-    zones = Array(country.timezones).map(&:to_s).uniq.compact
-
-    render json: zones
-  rescue StandardError => e
-    Rails.logger.error("TimezonesController#index failed: #{e.message}")
-    render json: []
+    begin
+      require "tzinfo"
+      zones = TZInfo::Country.get(country.alpha2).zones.map(&:identifier)
+      render json: zones.uniq.sort
+    rescue TZInfo::InvalidCountryCode
+      render json: []
+    rescue => e
+      Rails.logger.error("TimezonesController#index error: #{e.message}")
+      render json: []
+    end
   end
 end

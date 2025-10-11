@@ -1,171 +1,152 @@
 // app/javascript/controllers/registration_steps_controller.js
 import { Controller } from "@hotwired/stimulus"
 
+// Registration form controller handling steps, validations, and visual stepper animation
 export default class extends Controller {
   static targets = ["step", "stepCircle"]
-  static values = { timezones: Object }
 
   connect() {
     this.currentStep = 1
-    this.showStep()
-    this.initializeEmailWatcher()
-    this.initializeTimezoneWatcher()
-    this.initializeHandleWatcher()
+    this.showStep(this.currentStep)
   }
 
-  // === STEP 1 EMAIL ===
-  initializeEmailWatcher() {
-    const emailInput = document.querySelector("#user_email")
-    const nextBtn = document.querySelector("#step1-next-btn")
-    if (!emailInput || !nextBtn) return
-
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    const toggle = () => {
-      const valid = regex.test(emailInput.value.trim())
-      nextBtn.disabled = !valid
-      nextBtn.classList.toggle("opacity-50", !valid)
-      nextBtn.classList.toggle("cursor-not-allowed", !valid)
-    }
-    emailInput.addEventListener("input", toggle)
-    toggle()
-  }
-
-  // === STEP 2 TIMEZONE ===
-  initializeTimezoneWatcher() {
-    const tzSelect = document.querySelector("#timezone-select")
-    const nextBtn = document.querySelector("#step2-next-btn")
-    if (!tzSelect || !nextBtn) return
-
-    const toggle = () => {
-      const valid = tzSelect.value.trim().length > 0
-      nextBtn.disabled = !valid
-      nextBtn.classList.toggle("opacity-50", !valid)
-      nextBtn.classList.toggle("cursor-not-allowed", !valid)
-    }
-    tzSelect.addEventListener("input", toggle)
-    toggle()
-  }
-
-  // === STEP 3 STAR CITIZEN HANDLE ===
-  initializeHandleWatcher() {
-    const input = document.querySelector("#user_star_citizen_handle")
-    const message = document.querySelector("#handle-validation-msg")
-    const nextBtn = document.querySelector("#step3-next-btn")
-    const spinner = document.querySelector("#handle-spinner")
-    if (!input || !nextBtn || !message || !spinner) return
-
-    let timeoutId = null
-
-    const validateHandle = (value) => value.length >= 2 && value.length <= 256
-
-    const updateMessage = (text, colorVar) => {
-      message.textContent = text
-      message.className = `mt-1 text-sm ${colorVar}`
-    }
-
-    const showSpinner = (show) => {
-      spinner.classList.toggle("hidden", !show)
-    }
-
-    const checkHandle = async (handle) => {
-      try {
-        const res = await fetch(`/rsi_citizen/${encodeURIComponent(handle)}`)
-        const data = await res.json()
-
-        if (res.status === 200 && data.valid) {
-          updateMessage(`${handle} citizen dossier found!`, "text-[var(--clr-success-a0)]")
-          nextBtn.disabled = false
-          nextBtn.classList.remove("opacity-50", "cursor-not-allowed")
-        } else {
-          updateMessage(`${handle} citizen dossier not found – try again.`, "text-[var(--clr-danger-a0)]")
-          nextBtn.disabled = true
-          nextBtn.classList.add("opacity-50", "cursor-not-allowed")
-        }
-      } catch (err) {
-        updateMessage(`Error checking dossier. Try again.`, "text-[var(--clr-danger-a0)]")
-        nextBtn.disabled = true
-        nextBtn.classList.add("opacity-50", "cursor-not-allowed")
-      } finally {
-        showSpinner(false)
-      }
-    }
-
-    input.addEventListener("input", (e) => {
-      const handle = e.target.value.trim()
-      if (!validateHandle(handle)) {
-        updateMessage("Handle must be 2–256 characters.", "text-[var(--clr-warning-a0)]")
-        nextBtn.disabled = true
-        nextBtn.classList.add("opacity-50", "cursor-not-allowed")
-        return
-      }
-
-      updateMessage("Checking RSI dossier...", "text-[var(--clr-primary-a0)]")
-      showSpinner(true)
-      clearTimeout(timeoutId)
-      timeoutId = setTimeout(() => checkHandle(handle), 800)
-    })
-  }
-
-  // === NAVIGATION ===
+  // Step Navigation ---------------------------------------------------------
   next() {
     if (this.currentStep < this.stepTargets.length) {
       this.currentStep++
-      this.showStep()
+      this.showStep(this.currentStep)
     }
   }
 
   previous() {
     if (this.currentStep > 1) {
       this.currentStep--
-      this.showStep()
+      this.showStep(this.currentStep)
     }
   }
 
-  showStep() {
-    this.stepTargets.forEach((step, i) => step.classList.toggle("hidden", i + 1 !== this.currentStep))
-    this.stepCircleTargets.forEach((circle, i) => {
-      const stepNumber = i + 1
+  showStep(stepNumber) {
+    // Show current step
+    this.stepTargets.forEach((el, idx) => {
+      el.classList.toggle("hidden", idx + 1 !== stepNumber)
+    })
+
+    // Style the step circles
+    this.stepCircleTargets.forEach((circle, idx) => {
+      const n = idx + 1
       circle.classList.remove(
+        "animate-pulse-primary",
         "bg-[var(--clr-primary-a0)]",
         "bg-orange-500",
+        "text-white",
         "text-[var(--clr-light-a0)]",
-        "animate-pulse-primary"
+        "bg-[var(--clr-surface-a30)]"
       )
-      if (stepNumber === this.currentStep)
-        circle.classList.add("bg-[var(--clr-primary-a0)]", "text-white", "animate-pulse-primary")
-      else if (stepNumber < this.currentStep)
+
+      if (n === stepNumber) {
+        // Active step → pulsing orange primary glow
+        circle.classList.add(
+          "animate-pulse-primary",
+          "bg-[var(--clr-primary-a0)]",
+          "text-white"
+        )
+      } else if (n < stepNumber) {
+        // Completed step → solid orange
         circle.classList.add("bg-orange-500", "text-white")
-      else
+      } else {
+        // Inactive step → neutral surface
         circle.classList.add("bg-[var(--clr-surface-a30)]", "text-[var(--clr-light-a0)]")
+      }
     })
   }
 
-  updateTimezones(event) {
-    const country = event.target.value.trim()
-    const tzInput = document.querySelector("#timezone-select")
-    const tzList = document.querySelector("#timezone-list")
-    tzList.innerHTML = ""
+  // STEP 1 Email Validation -------------------------------------------------
+  validateEmail(e) {
+    const btn = document.getElementById("step1-next-btn")
+    const val = e.target.value.trim()
+    const valid = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val)
+    btn.disabled = !valid
+    btn.classList.toggle("opacity-50", !valid)
+    btn.classList.toggle("cursor-not-allowed", !valid)
+  }
+
+  // STEP 2 Country → Timezones ---------------------------------------------
+  updateTimezones(e) {
+    const country = e.target.value
+    const tzInput = document.getElementById("timezone-select")
+    const tzList = document.getElementById("timezone-list")
+    const nextBtn = document.getElementById("step2-next-btn")
+
     tzInput.value = ""
     tzInput.disabled = true
+    tzList.innerHTML = ""
 
-    if (!country) return
+    fetch(`/timezones.json?country=${encodeURIComponent(country)}`)
+      .then((r) => r.json())
+      .then((zones) => {
+        tzList.innerHTML = ""
+        if (Array.isArray(zones) && zones.length > 0) {
+          zones.forEach((z) => {
+            const o = document.createElement("option")
+            o.value = z
+            tzList.appendChild(o)
+          })
+          tzInput.disabled = false
+        } else {
+          const o = document.createElement("option")
+          o.value = "No time zones available"
+          tzList.appendChild(o)
+          tzInput.disabled = true
+        }
+      })
+      .catch((err) => console.error("Timezone load error", err))
 
-    const options = document.querySelectorAll("#country-list option")
-    let alpha2 = null
-    options.forEach(opt => {
-      if (opt.value.toLowerCase() === country.toLowerCase()) alpha2 = opt.dataset.alpha2
+    tzInput.addEventListener("input", () => {
+      const ok = tzInput.value && tzInput.value !== "No time zones available"
+      nextBtn.disabled = !ok
+      nextBtn.classList.toggle("opacity-50", !ok)
+      nextBtn.classList.toggle("cursor-not-allowed", !ok)
     })
+  }
 
-    let zones = (alpha2 && this.timezonesValue[alpha2]) || []
-    if (!Array.isArray(zones)) zones = typeof zones === "string" ? [zones] : []
+  // STEP 3 RSI Handle Verification -----------------------------------------
+  checkHandle(e) {
+    const handle = e.target.value.trim()
+    const msg = document.getElementById("handle-validation-msg")
+    const spinner = document.getElementById("handle-spinner")
+    const nextBtn = document.getElementById("step3-next-btn")
 
-    zones.forEach(zone => {
-      const option = document.createElement("option")
-      option.value = zone
-      tzList.appendChild(option)
-    })
+    msg.textContent = ""
+    spinner.classList.remove("hidden")
+    nextBtn.disabled = true
 
-    tzInput.disabled = zones.length === 0
-    tzInput.placeholder = zones.length > 0 ? "Start typing..." : "No zones available"
+    if (handle.length < 2) {
+      spinner.classList.add("hidden")
+      msg.textContent = "Handle too short"
+      msg.className = "mt-1 text-sm text-[var(--clr-danger-a0)]"
+      return
+    }
+
+    fetch(`/rsi_citizen/${encodeURIComponent(handle)}`)
+      .then((r) => r.json())
+      .then((d) => {
+        spinner.classList.add("hidden")
+        if (d.valid) {
+          msg.textContent = `${handle} citizen dossier found`
+          msg.className = "mt-1 text-sm text-[var(--clr-success-a0)]"
+          nextBtn.disabled = false
+          nextBtn.classList.remove("opacity-50", "cursor-not-allowed")
+        } else {
+          msg.textContent = `${handle} citizen dossier not found – try again.`
+          msg.className = "mt-1 text-sm text-[var(--clr-danger-a0)]"
+          nextBtn.disabled = true
+          nextBtn.classList.add("opacity-50", "cursor-not-allowed")
+        }
+      })
+      .catch(() => {
+        spinner.classList.add("hidden")
+        msg.textContent = "Error checking handle."
+        msg.className = "mt-1 text-sm text-[var(--clr-danger-a0)]"
+      })
   }
 }
