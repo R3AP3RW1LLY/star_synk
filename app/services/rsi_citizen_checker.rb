@@ -13,7 +13,7 @@ class RsiCitizenChecker
     begin
       response = Net::HTTP.start(url.host, url.port, use_ssl: true) do |http|
         req = Net::HTTP::Get.new(url)
-        req["User-Agent"] = "StarSynkBot/1.0 (+https://starsynk.app)"
+        req["User-Agent"] = "Star-SynkBot/1.0 (+https://star-synk.com)"
         http.request(req)
       end
     rescue StandardError => e

@@ -10,6 +10,7 @@ class User < ApplicationRecord
          :confirmable, :trackable
 
   # Validations
+  validates :confirmed_rsi_ownership, inclusion: { in: [ true, false ] }
   validates :star_citizen_handle, presence: true, uniqueness: true
   validates :country, presence: true
   validates :time_zone, presence: true
