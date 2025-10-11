@@ -1,7 +1,7 @@
 // app/javascript/controllers/registration_steps_controller.js
 import { Controller } from "@hotwired/stimulus"
 
-// Handles registration form navigation, validation, and RSI handle verification
+// Registration form flow: handles validation, progress, and UI state
 export default class extends Controller {
   static targets = ["step", "stepCircle"]
 
@@ -11,7 +11,7 @@ export default class extends Controller {
     this.validHandle = false
     this.debounceTimer = null
 
-    // Listen for country/timezone change from searchable-select controller
+    // Listen for location changes from searchable-select controller
     window.addEventListener("searchable-select:locationChange", (e) => this.handleLocationChange(e))
 
     if (this.isDev()) console.log("✅ registration-steps controller connected")
@@ -49,7 +49,7 @@ export default class extends Controller {
     const rightCard = document.getElementById("right-password-check")
     const layout = document.getElementById("registration-layout")
 
-    // === Left Card (Registration Progress) ===
+    // === Left card: Registration Progress ===
     if (leftCard) {
       if (stepNumber >= 2) {
         leftCard.classList.remove("hidden", "opacity-0")
@@ -60,7 +60,7 @@ export default class extends Controller {
       }
     }
 
-    // === Right Card (Password Requirements) ===
+    // === Right card: Password Requirements ===
     if (rightCard) {
       if (stepNumber === 4) {
         rightCard.classList.remove("hidden", "opacity-0")
@@ -71,12 +71,9 @@ export default class extends Controller {
       }
     }
 
-    // === Center the main registration card ===
+    // === Layout centering ===
     if (layout) {
-      if (stepNumber === 4) {
-        layout.classList.add("justify-between")
-        layout.classList.remove("justify-center")
-      } else if (stepNumber >= 2) {
+      if (stepNumber >= 2) {
         layout.classList.add("justify-between")
         layout.classList.remove("justify-center")
       } else {
@@ -138,10 +135,10 @@ export default class extends Controller {
     if (!/^[A-Za-z0-9]{3,100}$/.test(handle)) {
       msg.innerHTML = `<span style='color: var(--clr-warning-a0);'>
         <i class='fa-solid fa-xmark'></i> Handle must be 3–100 characters (letters/numbers only).</span>`
+      this.updateChecklist("check-handle", false)
       return
     }
 
-    // Show spinner
     spinner.classList.remove("hidden")
 
     this.debounceTimer = setTimeout(async () => {
@@ -185,6 +182,7 @@ export default class extends Controller {
     nextBtn.disabled = !ready
     nextBtn.classList.toggle("opacity-50", !ready)
     nextBtn.classList.toggle("cursor-not-allowed", !ready)
+    this.updateChecklist("check-handle", ready)
   }
 
   // === Step 4: Password Validation ===
@@ -226,11 +224,11 @@ export default class extends Controller {
     if (!icon) return
 
     if (valid) {
-      icon.classList.remove("fa-circle", "text-[var(--clr-surface-a40)]")
+      icon.classList.remove("fa-xmark", "text-[var(--clr-danger-a0)]")
       icon.classList.add("fa-check", "text-[var(--clr-success-a0)]")
     } else {
       icon.classList.remove("fa-check", "text-[var(--clr-success-a0)]")
-      icon.classList.add("fa-circle", "text-[var(--clr-surface-a40)]")
+      icon.classList.add("fa-xmark", "text-[var(--clr-danger-a0)]")
     }
   }
 
