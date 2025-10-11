@@ -2,6 +2,7 @@
 
 
 @import "./fontawesome_fix.css";
+@import "./registration_steps.css";
 
 @import "tailwindcss";
 
@@ -59,6 +60,9 @@
   /* Fonts */
   --font-primary: 'Poppins', sans-serif;
   --font-secondary: 'Roboto Slab', serif;
+
+  /* RGB values for primary color (for use in rgba) */
+  --clr-primary-a0-rgb: 240, 103, 36;
 }
 
 /* -------------------------------------------------------------------------- */

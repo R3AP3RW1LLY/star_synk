@@ -1,7 +1,7 @@
 // app/javascript/controllers/registration_steps_controller.js
 import { Controller } from "@hotwired/stimulus"
 
-// Handles multi-step registration and time zone filtering.
+// Controls multi-step registration UI and styling
 export default class extends Controller {
   static targets = ["step", "stepCircle"]
   static values = { timezones: Object }
@@ -26,11 +26,40 @@ export default class extends Controller {
   }
 
   showStep() {
+    // Handle step visibility
     this.stepTargets.forEach((step, i) => {
       step.classList.toggle("hidden", i + 1 !== this.currentStep)
     })
-    this.stepCircleTargets?.forEach((circle, i) => {
-      circle.classList.toggle("bg-[var(--clr-primary-a0)]", i + 1 === this.currentStep)
+
+    // Handle stepper circle styles
+    this.stepCircleTargets.forEach((circle, i) => {
+      const stepNumber = i + 1
+      circle.classList.remove(
+        "bg-[var(--clr-primary-a0)]",
+        "bg-orange-500",
+        "text-[var(--clr-light-a0)]",
+        "animate-pulse-primary"
+      )
+
+      // Active step: pulsating primary
+      if (stepNumber === this.currentStep) {
+        circle.classList.add(
+          "bg-[var(--clr-primary-a0)]",
+          "text-white",
+          "animate-pulse-primary"
+        )
+      }
+      // Completed step: solid orange
+      else if (stepNumber < this.currentStep) {
+        circle.classList.add("bg-orange-500", "text-white")
+      }
+      // Upcoming step: default surface look
+      else {
+        circle.classList.add(
+          "bg-[var(--clr-surface-a30)]",
+          "text-[var(--clr-light-a0)]"
+        )
+      }
     })
   }
 
@@ -45,7 +74,6 @@ export default class extends Controller {
 
     if (!selectedCountry) return
 
-    // Find ISO alpha2 from datalist
     const datalistOptions = document.querySelectorAll("#country-list option")
     let alpha2 = null
     datalistOptions.forEach(opt => {
@@ -54,18 +82,22 @@ export default class extends Controller {
       }
     })
 
-    const zones = (alpha2 && this.timezonesValue[alpha2]) || []
-
-    if (Array.isArray(zones) && zones.length > 0) {
-      zones.forEach(zone => {
-        const option = document.createElement("option")
-        option.value = zone
-        timezoneList.appendChild(option)
-      })
-      timezoneInput.disabled = false
-      timezoneInput.placeholder = "Start typing..."
-    } else {
-      timezoneInput.placeholder = "No zones available"
+    let zones = (alpha2 && this.timezonesValue[alpha2]) || []
+    if (!Array.isArray(zones)) {
+      if (typeof zones === "string" && zones.includes(",")) zones = zones.split(",")
+      else if (typeof zones === "string" && zones.trim().length > 0)
+        zones = [zones.trim()]
+      else zones = []
     }
+
+    zones.forEach(zone => {
+      const option = document.createElement("option")
+      option.value = zone
+      timezoneList.appendChild(option)
+    })
+
+    timezoneInput.disabled = zones.length === 0
+    timezoneInput.placeholder =
+      zones.length > 0 ? "Start typing..." : "No zones available"
   }
 }
