@@ -61,45 +61,67 @@
       </div>
 
       <!-- STEP 2: COUNTRY + TIME ZONE -->
-      <div data-registration-steps-target="step" data-step="2" class="hidden step-block">
-        <div class="field mb-5 relative">
-          <%= f.label :country, "Country of Residence",
-                      class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
-          <div class="relative">
-            <i class="fa-solid fa-globe absolute left-3 top-1/2 -translate-y-1/2
-                       text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
-            <input list="country-list" id="country-select"
-                   name="<%= f.object_name %>[country]" placeholder="Start typing..."
-                   data-action="change->registration-steps#updateTimezones"
-                   class="w-full py-2 pl-10 pr-3 rounded-md
-                          bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)]
-                          border border-[var(--clr-surface-a40)]
-                          focus:outline-none focus:ring-2
-                          focus:ring-[var(--clr-primary-a20)]">
-            <datalist id="country-list">
-              <% ISO3166::Country.all.sort_by(&:common_name).each do |country| %>
-                <option value="<%= country.common_name %>"></option>
-              <% end %>
-            </datalist>
-          </div>
-        </div>
+      <div data-registration-steps-target="step"
+           data-step="2"
+           class="hidden step-block"
+           data-action="searchable-select:location-change->registration-steps#handleLocationChange">
 
-        <div class="field mb-5 relative">
-          <%= f.label :time_zone, "Time Zone",
-                      class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
-          <div class="relative">
-            <i class="fa-solid fa-clock absolute left-3 top-1/2 -translate-y-1/2
-                       text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
-            <input list="timezone-list" id="timezone-select"
-                   name="<%= f.object_name %>[time_zone]"
-                   placeholder="Select a country first..."
-                   disabled
-                   class="w-full py-2 pl-10 pr-3 rounded-md
-                          bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)]
-                          border border-[var(--clr-surface-a40)]
-                          focus:outline-none focus:ring-2
-                          focus:ring-[var(--clr-primary-a20)]">
-            <datalist id="timezone-list"></datalist>
+        <!-- searchable-select controller -->
+        <div data-controller="searchable-select">
+
+          <!-- Country -->
+          <div class="field mb-5 relative">
+            <%= f.label :country, "Country of Residence",
+                        class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+            <div class="relative">
+              <i class="fa-solid fa-globe absolute left-3 top-1/2 -translate-y-1/2
+                         text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
+              <input list="country-list"
+                     id="country-select"
+                     name="<%= f.object_name %>[country]"
+                     placeholder="Start typing..."
+                     data-action="change->searchable-select#loadTimezones"
+                     data-searchable-select-target="countrySelect"
+                     class="w-full py-2 pl-10 pr-3 rounded-md
+                            bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)]
+                            border border-[var(--clr-surface-a40)]
+                            focus:outline-none focus:ring-2
+                            focus:ring-[var(--clr-primary-a20)]">
+              <datalist id="country-list">
+                <% ISO3166::Country.all.sort_by(&:common_name).each do |country| %>
+                  <option value="<%= country.alpha2 %>"><%= country.common_name %></option>
+                <% end %>
+              </datalist>
+            </div>
+          </div>
+
+          <!-- Time Zone -->
+          <div class="field mb-5 relative">
+            <%= f.label :time_zone, "Time Zone",
+                        class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+            <div class="relative">
+              <i class="fa-solid fa-clock absolute left-3 top-1/2 -translate-y-1/2
+                         text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
+              <input id="timezone-select"
+                     type="text"
+                     name="<%= f.object_name %>[time_zone]"
+                     placeholder="Select your timezone"
+                     data-action="focus->searchable-select#openDropdown
+                                  input->searchable-select#filterOptions
+                                  blur->searchable-select#closeDropdown"
+                     data-searchable-select-target="timezoneInput"
+                     disabled
+                     class="w-full py-2 pl-10 pr-3 rounded-md
+                            bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)]
+                            border border-[var(--clr-surface-a40)]
+                            focus:outline-none focus:ring-2
+                            focus:ring-[var(--clr-primary-a20)]" />
+              <ul data-searchable-select-target="timezoneDropdown"
+                  class="absolute hidden z-10 mt-1 max-h-48 w-full overflow-y-auto
+                         rounded-md bg-[var(--clr-surface-a20)]
+                         border border-[var(--clr-surface-a40)] shadow-lg">
+              </ul>
+            </div>
           </div>
         </div>
 

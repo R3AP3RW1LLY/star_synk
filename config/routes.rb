@@ -21,7 +21,7 @@ Rails.application.routes.draw do
             },
             path: ""
 
-  get "/timezones", to: "timezones#index", defaults: { format: :json }
+  get "/timezones", to: "timezones#index"
   get "/rsi_citizen/:handle", to: "rsi_citizens#show"
 
   mount ActionCable.server => "/cable"
