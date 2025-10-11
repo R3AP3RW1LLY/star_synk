@@ -22,7 +22,7 @@ Rails.application.routes.draw do
             path: ""
 
   get "/timezones", to: "timezones#index"
-  get "/rsi_citizen/:handle", to: "rsi_citizens#show"
+  get "rsi_check", to: "rsi#check", as: :rsi_check
 
   mount ActionCable.server => "/cable"
   mount Sidekiq::Web => "/sidekiq"

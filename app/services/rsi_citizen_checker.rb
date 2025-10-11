@@ -1,3 +1,4 @@
+# app/services/rsi_citizen_checker.rb
 require "net/http"
 require "uri"
 
@@ -5,7 +6,7 @@ class RsiCitizenChecker
   BASE_URL = "https://robertsspaceindustries.com/en/citizens/".freeze
 
   def self.verify(handle)
-    return { valid: false, status: 422, message: "Invalid handle" } if handle.blank?
+    return { valid: false, status: 422, message: "Handle cannot be blank." } if handle.blank?
 
     encoded = URI.encode_www_form_component(handle.strip)
     url = URI.parse("#{BASE_URL}#{encoded}")
@@ -18,18 +19,40 @@ class RsiCitizenChecker
       end
     rescue StandardError => e
       Rails.logger.error("RSI check failed for #{handle}: #{e.message}")
-      return { valid: false, status: 500, message: "Network error" }
+      return {
+        valid: false,
+        status: 500,
+        message: "Network error while checking #{handle}.",
+        color: "var(--clr-warning-a0)"
+      }
     end
 
     body = response.body.to_s
-    if response.code.to_i == 200
+    code = response.code.to_i
+
+    if code == 200
       if body.match?(/Page not found|Citizen not found/i)
-        { valid: false, status: 404, message: "#{handle} citizen dossier not found" }
+        {
+          valid: false,
+          status: 404,
+          message: "Citizen dossier not found for #{handle}",
+          color: "var(--clr-warning-a0)"
+        }
       else
-        { valid: true, status: 200, message: "#{handle} citizen dossier found" }
+        {
+          valid: true,
+          status: 200,
+          message: "✔️ Citizen dossier found for #{handle}",
+          color: "var(--clr-success-a0)"
+        }
       end
     else
-      { valid: false, status: response.code.to_i, message: "Unexpected HTTP #{response.code}" }
+      {
+        valid: false,
+        status: code,
+        message: "Citizen dossier not found for #{handle}",
+        color: "var(--clr-danger-a0)"
+      }
     end
   end
 end
