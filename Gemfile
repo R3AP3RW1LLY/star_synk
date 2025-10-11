@@ -92,3 +92,5 @@ group :development do
 end
 
 gem "countries", "~> 8.0", ">= 8.0.4"
+gem "ferrum", "~> 0.17.1"
+gem "httparty", "~> 0.23.2"
