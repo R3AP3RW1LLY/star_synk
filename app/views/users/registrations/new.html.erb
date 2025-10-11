@@ -34,7 +34,6 @@
         <div class="field mb-5 relative">
           <%= f.label :email, "Email Address", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
           <div class="relative">
-            <!-- EMAIL ICON -->
             <i class="fa-solid fa-envelope absolute left-3 top-[50%] transform -translate-y-[50%] text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
             <%= f.email_field :email,
                   autofocus: true,
@@ -43,11 +42,12 @@
           </div>
         </div>
 
-        <div class="flex justify-end">
+        <div class="flex justify-end items-center">
           <button type="button"
                   data-action="click->registration-steps#next"
-                  class="px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]">
-            Next →
+                  class="flex items-center px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]">
+            Next
+            <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
           </button>
         </div>
       </div>
@@ -55,11 +55,9 @@
       <!-- STEP 2: COUNTRY + TIMEZONE -->
       <div data-registration-steps-target="step" data-step="2" class="hidden step-block">
 
-        <!-- COUNTRY -->
         <div class="field mb-5 relative">
           <%= f.label :country, "Country of Residence", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
           <div class="relative">
-            <!-- GLOBE ICON -->
             <i class="fa-solid fa-globe absolute left-3 top-[50%] transform -translate-y-[50%] text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
             <input list="country-list"
                    id="country-select"
@@ -75,11 +73,9 @@
           </div>
         </div>
 
-        <!-- TIME ZONE -->
         <div class="field mb-5 relative">
           <%= f.label :time_zone, "Time Zone", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
           <div class="relative">
-            <!-- CLOCK ICON -->
             <i class="fa-solid fa-clock absolute left-3 top-[50%] transform -translate-y-[50%] text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
             <input list="timezone-list"
                    id="timezone-select"
@@ -91,13 +87,19 @@
           </div>
         </div>
 
-        <div class="flex justify-between">
+        <div class="flex justify-between items-center">
           <button type="button"
                   data-action="click->registration-steps#previous"
-                  class="px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)]">← Back</button>
+                  class="flex items-center px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)]">
+            <i class="fa-solid fa-arrow-left mr-2 text-sm"></i>
+            Back
+          </button>
           <button type="button"
                   data-action="click->registration-steps#next"
-                  class="px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]">Next →</button>
+                  class="flex items-center px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]">
+            Next
+            <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+          </button>
         </div>
       </div>
 
@@ -106,20 +108,25 @@
         <div class="field mb-5 relative">
           <%= f.label :star_citizen_handle, "Star Citizen Handle", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
           <div class="relative">
-            <!-- USER ASTRONAUT ICON -->
             <i class="fa-solid fa-user-astronaut absolute left-3 top-[50%] transform -translate-y-[50%] text-[var(--clr-light-a0)] text-sm pointer-events-none"></i>
             <%= f.text_field :star_citizen_handle,
                   class: "w-full py-2 pl-10 pr-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]" %>
           </div>
         </div>
 
-        <div class="flex justify-between">
+        <div class="flex justify-between items-center">
           <button type="button"
                   data-action="click->registration-steps#previous"
-                  class="px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)]">← Back</button>
+                  class="flex items-center px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)]">
+            <i class="fa-solid fa-arrow-left mr-2 text-sm"></i>
+            Back
+          </button>
           <button type="button"
                   data-action="click->registration-steps#next"
-                  class="px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]">Next →</button>
+                  class="flex items-center px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]">
+            Next
+            <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+          </button>
         </div>
       </div>
 
@@ -159,12 +166,15 @@
           </div>
         </div>
 
-        <div class="flex justify-between">
+        <div class="flex justify-between items-center">
           <button type="button"
                   data-action="click->registration-steps#previous"
-                  class="px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)]">← Back</button>
+                  class="flex items-center px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)]">
+            <i class="fa-solid fa-arrow-left mr-2 text-sm"></i>
+            Back
+          </button>
           <%= f.submit "Create Account",
-                class: "px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]" %>
+                class: "flex items-center px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]" %>
         </div>
       </div>
 
