@@ -1,7 +1,10 @@
+// app/javascript/controllers/registration_steps_controller.js
 import { Controller } from "@hotwired/stimulus"
 
+// Handles multi-step registration and time zone filtering.
 export default class extends Controller {
   static targets = ["step", "stepCircle"]
+  static values = { timezones: Object }
 
   connect() {
     this.currentStep = 1
@@ -26,40 +29,43 @@ export default class extends Controller {
     this.stepTargets.forEach((step, i) => {
       step.classList.toggle("hidden", i + 1 !== this.currentStep)
     })
-    if (this.stepCircleTargets) {
-      this.stepCircleTargets.forEach((circle, i) => {
-        circle.classList.toggle("bg-[var(--clr-primary-a0)]", i + 1 === this.currentStep)
-      })
-    }
+    this.stepCircleTargets?.forEach((circle, i) => {
+      circle.classList.toggle("bg-[var(--clr-primary-a0)]", i + 1 === this.currentStep)
+    })
   }
 
-  async filterTimezones(event) {
-    const countryCode = event.target.value
-    const timezoneSelect = document.querySelector("#timezone-select")
-    timezoneSelect.innerHTML = '<option value="">Select Time Zone</option>'
+  updateTimezones(event) {
+    const selectedCountry = event.target.value.trim()
+    const timezoneInput = document.querySelector("#timezone-select")
+    const timezoneList = document.querySelector("#timezone-list")
 
-    if (!countryCode) return
+    timezoneList.innerHTML = ""
+    timezoneInput.value = ""
+    timezoneInput.disabled = true
 
-    try {
-      // Full list of supported time zones
-      const allZones = Intl.supportedValuesOf("timeZone")
+    if (!selectedCountry) return
 
-      // Simple filter: match by country substring (handles common cases)
-      const filtered = allZones.filter(zone =>
-        zone.toLowerCase().includes(countryCode.toLowerCase())
-      )
+    // Find ISO alpha2 from datalist
+    const datalistOptions = document.querySelectorAll("#country-list option")
+    let alpha2 = null
+    datalistOptions.forEach(opt => {
+      if (opt.value.toLowerCase() === selectedCountry.toLowerCase()) {
+        alpha2 = opt.dataset.alpha2
+      }
+    })
 
-      const zones = filtered.length > 0 ? filtered : allZones
+    const zones = (alpha2 && this.timezonesValue[alpha2]) || []
 
+    if (Array.isArray(zones) && zones.length > 0) {
       zones.forEach(zone => {
-        const opt = document.createElement("option")
-        opt.value = zone
-        opt.textContent = zone.replaceAll("_", " ")
-        timezoneSelect.appendChild(opt)
+        const option = document.createElement("option")
+        option.value = zone
+        timezoneList.appendChild(option)
       })
-    } catch (err) {
-      console.error("Timezone load failed:", err)
-      timezoneSelect.innerHTML = '<option>Error loading time zones</option>'
+      timezoneInput.disabled = false
+      timezoneInput.placeholder = "Start typing..."
+    } else {
+      timezoneInput.placeholder = "No zones available"
     }
   }
 }

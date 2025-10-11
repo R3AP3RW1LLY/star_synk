@@ -1,27 +1,40 @@
 import { Controller } from "@hotwired/stimulus"
 
+// Handles searchable dropdowns (country field etc.)
+// Replaces <select> with a text input + dropdown list for KISS search UX.
 export default class extends Controller {
-  static targets = ["select", "search"]
+  static targets = ["input", "list", "hidden"]
 
   connect() {
-    this.originalOptions = Array.from(this.selectTarget.options)
+    this.options = Array.from(this.listTarget.querySelectorAll("li"))
+    this.hide() // Hide dropdown on load
   }
 
   show() {
-    this.searchTarget.classList.remove("hidden")
+    this.listTarget.classList.remove("hidden")
   }
 
   hide() {
-    setTimeout(() => this.searchTarget.classList.add("hidden"), 150)
-    this.filter() // reset view
+    setTimeout(() => this.listTarget.classList.add("hidden"), 150)
   }
 
   filter() {
-    const query = this.searchTarget.value.toLowerCase()
-    this.selectTarget.innerHTML = ""
-    const matches = this.originalOptions.filter(opt =>
-      opt.textContent.toLowerCase().includes(query)
-    )
-    matches.forEach(opt => this.selectTarget.appendChild(opt))
+    const query = this.inputTarget.value.toLowerCase()
+    this.options.forEach(opt => {
+      const text = opt.textContent.toLowerCase()
+      opt.classList.toggle("hidden", !text.includes(query))
+    })
+    this.show()
+  }
+
+  select(event) {
+    const li = event.currentTarget
+    const value = li.dataset.value
+    const text = li.textContent.trim()
+
+    this.inputTarget.value = text
+    this.hiddenTarget.value = value
+
+    this.hide()
   }
 }

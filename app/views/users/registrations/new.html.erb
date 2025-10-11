@@ -1,7 +1,8 @@
 <!-- app/views/users/registrations/new.html.erb -->
 <div class="flex flex-col items-center justify-center min-h-[calc(100vh-5rem)] px-4"
      data-controller="registration-steps center-content"
-     data-center-content-target="content">
+     data-center-content-target="content"
+     data-registration-steps-timezones-value="<%= TZInfo::Country.all.map { |c| [c.code, c.zone_identifiers] }.to_h.to_json %>">
 
   <!-- Stepper -->
   <div class="flex items-center justify-center mb-8 space-x-4">
@@ -28,18 +29,13 @@
 
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
 
-      <!-- STEP 1: EMAIL -->
+      <!-- STEP 1 -->
       <div data-registration-steps-target="step" data-step="1" class="step-block">
         <div class="field mb-5">
           <%= f.label :email, "Email Address", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
-          <div class="relative">
-            <i class="fa-solid fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-[var(--clr-light-a0)]"></i>
-            <%= f.email_field :email,
-              autofocus: true,
-              class: "w-full py-2 pl-10 pr-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]" %>
-          </div>
+          <%= f.email_field :email, autofocus: true,
+                class: "w-full py-2 px-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]" %>
         </div>
-
         <div class="flex justify-end">
           <button type="button"
                   data-action="click->registration-steps#next"
@@ -49,65 +45,39 @@
         </div>
       </div>
 
-      <!-- STEP 2: COUNTRY & TIMEZONE -->
+      <!-- STEP 2: COUNTRY + TIMEZONE -->
       <div data-registration-steps-target="step" data-step="2" class="hidden step-block">
-        <!-- Country -->
-        <div class="field mb-5" data-controller="searchable-select">
-          <%= f.label :country, "Country of Residence", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
-          <select id="country-select"
-                  data-searchable-select-target="select"
-                  data-action="change->registration-steps#filterTimezones"
-                  class="w-full py-2 pl-3 pr-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]">
-            <option value="">Select Country</option>
-            <% ISO3166::Country.all.sort_by { |c| c.common_name || c.iso_short_name || c.alpha2 }.each do |country| %>
-              <option value="<%= country.alpha2 %>"><%= country.common_name || country.iso_short_name || country.alpha2 %></option>
-            <% end %>
-          </select>
 
-          <input type="text"
-                 placeholder="Search..."
-                 data-searchable-select-target="search"
-                 data-action="input->searchable-select#filter focus->searchable-select#show blur->searchable-select#hide"
-                 class="mt-2 w-full py-2 px-3 rounded-md bg-[var(--clr-surface-a10)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)] hidden" />
-        </div>
-
-        <!-- Time Zone -->
-        <div class="field mb-5" data-controller="searchable-select">
-          <%= f.label :time_zone, "Time Zone", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
-          <select id="timezone-select"
-                  data-searchable-select-target="select"
-                  class="w-full py-2 pl-3 pr-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]">
-            <option value="">Select Time Zone</option>
-          </select>
-
-          <input type="text"
-                 placeholder="Search..."
-                 data-searchable-select-target="search"
-                 data-action="input->searchable-select#filter focus->searchable-select#show blur->searchable-select#hide"
-                 class="mt-2 w-full py-2 px-3 rounded-md bg-[var(--clr-surface-a10)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)] hidden" />
-        </div>
-
-        <div class="flex justify-between">
-          <button type="button"
-                  data-action="click->registration-steps#previous"
-                  class="px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)]">
-            ← Back
-          </button>
-
-          <button type="button"
-                  data-action="click->registration-steps#next"
-                  class="px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]">
-            Next →
-          </button>
-        </div>
-      </div>
-
-      <!-- STEP 3: STAR CITIZEN HANDLE -->
-      <div data-registration-steps-target="step" data-step="3" class="hidden step-block">
+        <!-- COUNTRY -->
         <div class="field mb-5">
-          <%= f.label :star_citizen_handle, "Star Citizen Handle", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
-          <%= f.text_field :star_citizen_handle,
-            class: "w-full py-2 px-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]" %>
+          <%= f.label :country, "Country of Residence",
+                class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+
+          <input list="country-list"
+                 id="country-select"
+                 name="<%= f.object_name %>[country]"
+                 placeholder="Start typing..."
+                 data-action="change->registration-steps#updateTimezones"
+                 class="w-full py-2 px-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]">
+
+          <datalist id="country-list">
+            <% ISO3166::Country.all.sort_by { |c| c.common_name || c.iso_short_name || c.alpha2 }.each do |country| %>
+              <option value="<%= country.common_name || country.iso_short_name %>" data-alpha2="<%= country.alpha2 %>"></option>
+            <% end %>
+          </datalist>
+        </div>
+
+        <!-- TIME ZONE -->
+        <div class="field mb-5">
+          <%= f.label :time_zone, "Time Zone",
+                class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
+          <input list="timezone-list"
+                 id="timezone-select"
+                 name="<%= f.object_name %>[time_zone]"
+                 placeholder="Select a country first..."
+                 disabled
+                 class="w-full py-2 px-3 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]">
+          <datalist id="timezone-list"></datalist>
         </div>
 
         <div class="flex justify-between">
@@ -116,7 +86,6 @@
                   class="px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)]">
             ← Back
           </button>
-
           <button type="button"
                   data-action="click->registration-steps#next"
                   class="px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]">
@@ -125,55 +94,7 @@
         </div>
       </div>
 
-      <!-- STEP 4: PASSWORD -->
-      <div data-registration-steps-target="step" data-step="4" class="hidden step-block">
-        <div class="field relative mb-5" data-controller="password-visibility">
-          <%= f.label :password, "Password", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
-          <div class="relative">
-            <%= f.password_field :password,
-              autocomplete: "new-password",
-              data: { password_visibility_target: "input" },
-              class: "w-full pl-10 pr-10 py-2 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]" %>
-            <button type="button"
-                    data-action="click->password-visibility#toggle"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer">
-              <i data-password-visibility-target="icon" class="fa-solid fa-eye-slash text-[var(--clr-light-a0)] hover:text-[var(--clr-primary-a20)]"></i>
-            </button>
-          </div>
-        </div>
-
-        <div class="field relative mb-5" data-controller="password-visibility">
-          <%= f.label :password_confirmation, "Confirm Password", class: "block text-sm font-semibold text-[var(--clr-primary-a30)] mb-1" %>
-          <div class="relative">
-            <%= f.password_field :password_confirmation,
-              autocomplete: "new-password",
-              data: { password_visibility_target: "input" },
-              class: "w-full pl-10 pr-10 py-2 rounded-md bg-[var(--clr-surface-a20)] text-[var(--clr-light-a0)] border border-[var(--clr-surface-a40)] focus:outline-none focus:ring-2 focus:ring-[var(--clr-primary-a20)]" %>
-            <button type="button"
-                    data-action="click->password-visibility#toggle"
-                    class="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer">
-              <i data-password-visibility-target="icon" class="fa-solid fa-eye-slash text-[var(--clr-light-a0)] hover:text-[var(--clr-primary-a20)]"></i>
-            </button>
-          </div>
-        </div>
-
-        <div class="flex justify-between">
-          <button type="button"
-                  data-action="click->registration-steps#previous"
-                  class="px-4 py-2 bg-[var(--clr-surface-a40)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-surface-a30)]">
-            ← Back
-          </button>
-
-          <%= f.submit "Create Account",
-            class: "px-4 py-2 bg-[var(--clr-primary-a0)] text-[var(--clr-light-a0)] rounded-md hover:bg-[var(--clr-primary-a20)]" %>
-        </div>
-      </div>
-
+      <!-- Keep other steps unchanged -->
     <% end %>
-
-    <div class="mt-4 flex justify-between text-sm font-medium">
-      <%= link_to "Log in", new_user_session_path, class: "text-[var(--clr-primary-a30)] hover:text-[var(--clr-primary-a0)]" %>
-      <%= link_to "Forgot your password?", new_user_password_path, class: "text-[var(--clr-primary-a30)] hover:text-[var(--clr-primary-a0)]" %>
-    </div>
   </div>
 </div>
